@@ -107,8 +107,11 @@ BEGIN
 	DECLARE @SQL AS VARCHAR(MAX)
 	SET @SQL = CONCAT(
 		'SELECT ',
-		'   id, category_id, name, description, ind_level, ind_status, create_at, update_at ',
-		'FROM store.categories WHERE ind_status = 1;'
+		'	C.id, C.category_id, CD.name AS category_parent_name, C.name, C.description, ',
+		'	C.ind_level, C.ind_status, C.create_at, C.update_at ',
+		'FROM store.categories AS C ',
+		'	LEFT JOIN store.categories AS CD ON CD.id = C.category_id ',
+		'WHERE C.ind_status = 1;'
     )
 	EXECUTE (@SQL)
 	SET NOCOUNT OFF
@@ -123,8 +126,11 @@ BEGIN
 	DECLARE @SQL AS VARCHAR(MAX)
 	SET @SQL = CONCAT(
 		'SELECT ',
-		'   id, category_id, name, description, ind_level, ind_status, create_at, update_at ',
-		'FROM store.categories WHERE id = ', CAST(@ID AS VARCHAR), ';'
+		'	C.id, C.category_id, CD.name AS category_parent_name, C.name, C.description, ',
+		'	C.ind_level, C.ind_status, C.create_at, C.update_at ',
+		'FROM store.categories AS C ',
+		'	LEFT JOIN store.categories AS CD ON CD.id = C.category_id ',
+		'WHERE C.id = ', CAST(@id AS VARCHAR), ';'
     )
 	EXECUTE (@SQL)
 	SET NOCOUNT OFF

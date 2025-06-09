@@ -3,7 +3,7 @@ import pyodbc;
 class Categories:
     def __init__(self):
         #self.conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=DESKTOP-SC4TSI1;DATABASE=DB_SALES;UID=sa;PWD=Los_@_Gremlins2025')
-        self.conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=DESKTOP-SC4TSI1;DATABASE=DB_SALES;')
+        self.conn = pyodbc.connect('DRIVER={SQL SERVER};SERVER=DESKTOP-SC4TSI1;DATABASE=DB_CRM;')
         self.cursor = self.conn.cursor()
 
     def create(self, category_id, name, description, ind_level):
