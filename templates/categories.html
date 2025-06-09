@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'lib/bootstrap5.3.6/css/bootstrap.min.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'lib/fontawesome6.7.2/css/all.css') }}" />
+        <script src="{{ url_for('static', filename= 'lib/bootstrap5.3.6/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename= 'lib/jquery/jquery-3.6.0.min.js') }}"></script>
+    </head>
+    <body onload="loadCategories();">
+        <!-- INIT: MODAL MESSAGE -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#message" style="display:none;" id="btAlertMessage"></button>
+        <div class="modal fade" id="message" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="messageLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="messageLabel">Control de Categorías</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col"><p id="pModalMessage">...</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="bt-show-message-success" type="button" class="btn btn-secondary" data-bs-target="" data-bs-dismiss="" data-bs-toggle="modal">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: MODAL MESSAGE -->
+
+        <!-- INIT: MODAL CONFIRM -->
+        <button id="bt-view-status" data-bs-toggle="modal" data-bs-target="#div-modal-view-status" style="display: none;"></button>
+        <div class="modal fade" id="div-modal-view-status" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="div-modal-view-status-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="div-modal-view-status-label">Control de Categorías</h5>
+                        <button type="button" id="btCRUDClose" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row mt">
+                                <div class="col-md">
+                                    <p>¿Está seguro de eliminar el registro?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-lg bg-dark bg-gradient text-light" data-bs-dismiss="modal" onclick='onDelete();'><i class="fas fa-check me-2"></i>Si</button>
+                        <button type="button" class="btn btn-lg bg-danger bg-gradient text-light" data-bs-dismiss="modal"><i class="fas fa-xmark me-2"></i>No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: MODAL CONFIRM -->
+
+        <!-- INIT: MODAL CRUD -->
+        <button id="bt-view-crud" data-bs-toggle="modal" data-bs-target="#div-modal-view-crud" style="display: none;"></button>
+        <div class="modal fade" id="div-modal-view-crud" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="div-modal-view-crud-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="div-modal-view-crud-label">Crear Categoría</h5>
+                        <button type="button" id="btCRUDClose" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <form class="row g-3">
+                                <input type="hidden" id="hid-ind-level" values="" />
+                                <div class="col-md-6">
+                                    <label class="form-label">Categoría</label>
+                                    <select id="cbo-category" class="form-select form-select-sm">
+                                        <option value='0' selected></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control form-control-sm" id="txt-name" value="" />
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Descripción</label>
+                                    <input type="text" class="form-control form-control-sm" id="txt-description" value="" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-lg bg-dark bg-gradient text-light me-4" data-bs-dismiss="modal" onclick='onSave();'><i class="fas fa-floppy-disk me-2"></i>Guardar</button>
+                        <button type="button" class="btn btn-lg bg-danger bg-gradient text-light" data-bs-dismiss="modal"><i class="fas fa-xmark me-2"></i>Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: MODAL CRUD -->
+
+        <div class="container-fluid m-0 p-0">
+            <div class="row m-0 p-0">
+                <div class="col m-0 p-0">
+                    <nav class="navbar bg-dark"><div class="container-fluid"><a href="#" class="navbar-brand fw-bold text-light">Categorías</a></div></nav>
+                </div>
+            </div>
+            <div class="row ms-4 me-4 pt-4 pb-4"><div class="col"><button class="btn btn-secondary" onclick="onShowCRUD();"><i class="fas fa-plus me-2"></i>Crear Categoría</button></div></div>
+            <div class="row ms-4 me-4">
+                <div class="col">
+                    <table id="table-list" class="table table-striped table-bordered table-hover">
+                        <tr class="align-middle">
+                            <th style="background-color: rgb(110,1,105); color: #ffffff;" width="60"></th>
+                            <th style="background-color: rgb(110,1,105); color: #ffffff;" width="60"></th>
+                            <th style="background-color: rgb(110,1,105); color: #ffffff; text-align: center;">Categoría</th>
+                            <th style="background-color: rgb(110,1,105); color: #ffffff; text-align: center;">Nombre</th>
+                            <th style="background-color: rgb(110,1,105); color: #ffffff; text-align: center;">Descripción</th>
+                            <th style="background-color: rgb(110,1,105); color: #ffffff; text-align: center;">Fecha Creación</th>
+                        </tr>
+                        <tbody id="tb-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    let selID = 0;
+    let selAction = "";
+    let URL_BASE_API = "http://127.0.0.1:4000";
+    let listCategory = [];
+    //INIT: CONSUMO DE APIS: VEHÍCULOS, CATEGORÍAS, MARCA, COLOR Y COMBUSTIBLE
+    async function postCategory(raw) {
+        const response = await fetch(URL_BASE_API + '/categories', {
+            method: "POST",
+            body: JSON.stringify(raw),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+        });
+        json = await response.json();
+        return json;
+    }
+    async function putCategory(raw) {
+        const response = await fetch(URL_BASE_API + '/categories/' + raw.id, {
+            method: "PUT",
+            body: JSON.stringify(raw),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+        });
+        json = await response.json();
+        return json;
+    }
+    async function deleteCategory(id) {
+        const response = await fetch(URL_BASE_API + '/categories/' + id, {
+            method: "DELETE"
+        });
+        let json = await response.json();
+        return json;
+    }
+    async function getAllCategory() {
+        const response = await fetch(URL_BASE_API + '/categories', {
+            method: "GET"
+        });
+        let json = await response.json();
+        return json;
+    }
+    async function getByIdCategory(id) {
+        const response = await fetch(URL_BASE_API + '/categories/' + id, {
+            method: "GET"
+        });
+        let json = await response.json();
+        return json;
+    }
+    //END: CONSUMO DE APIS: VEHÍCULOS, CATEGORÍAS, MARCA, COLOR Y COMBUSTIBLE
+
+    //INIT: CARGA DE DATOS PARA SELECTS
+    async function onLoadSelectCategory() {
+        let list = await getAllCategory();
+        $('#cbo-category').html("<option value='0' selected>Seleccione una categoría ...</option>");
+        for(const item of list) {
+            let sHTML = "<option value='" + item.id + "'>" + item.name + "</opion>";
+            $('#cbo-category').append(sHTML);
+        }
+    }
+    //END: CARGA DE DATOS PARA SELECTS
+
+    //INIT: OPERACIONES CRUD DE CATEGORÍAS
+    //LISTAR CATEGORÍAS
+    async function loadCategories() {
+        document.getElementById('tb-list').innerHTML = "<tr><td colspan='6' class='text-center p-5'><div class='spinner-grow' role='status'><span class='visually-hidden'>Loading...</span></div></td></tr>";
+        listCategory = await getAllCategory();
+        document.getElementById('tb-list').innerHTML = "";
+        for(const item of listCategory) {
+            let sHTML = "";
+            sHTML += "<tr class='align-middle'>";
+            sHTML += "    <td><button class='btn btn-lg btn-warning' onclick='onSelCategoryUpdate(" + item.id + ");'><i class='fas fa-pen-to-square'></i></button></td>";
+            sHTML += "    <td><button class='btn btn-lg btn-danger' onclick='onSelCategoryRemove(" + item.id + ");'><i class='fas fa-trash-can'></i></button></td>";
+            sHTML += "    <td>" + (item.category_parent_name == null ? "" : item.category_parent_name) + "</td>";
+            sHTML += "    <td>" + item.name + "</td>";
+            sHTML += "    <td>" + item.description + "</td>";
+            sHTML += "    <td>" + item.create_at + "</td>";
+            sHTML += "</tr>";
+            document.getElementById('tb-list').innerHTML += sHTML;
+        }
+    }
+
+    //ENCONTRAR CATEGORÍA POR ID
+    async function onSelCategoryUpdate(id) {
+        selID = id;
+        selAction = "U";
+        let category = await getByIdCategory(selID);
+        $('#cbo-category').val("" + category.category_id);
+        $('#txt-name').val("" + category.name);
+        $('#txt-description').val("" + category.description);
+        $('#hid-ind-level').val("" + category.ind_level);
+        document.getElementById('div-modal-view-crud-label').innerHTML = "Actualizar Categoría";
+        document.getElementById('bt-view-crud').click();
+    }
+    //ELIMINAR CATEGORÍA POR ID
+    async function onDelete() {
+        await deleteCategory(selID);//LLAMADA ASYNCRONA PARA ELIMINAR UNA CATEGORÍA
+        await onLoadSelectCategory();//CARGA ASÍNCRONA DE CATEGORÍAS PARA EL TAG SELECT
+        await loadCategories();//CARGA ASÍNCRONA DE CATEGORIAS
+        selAction = "";
+        selID = 0;
+    }
+    //MÉTODO PARA CREAR Y ACTUALIZAR CATEGORÍAS
+    async function onSave() {
+        let id = selID;
+        let categoryId = $('#cbo-category').val();
+        let name = $('#txt-name').val();
+        let description = $('#txt-description').val();
+        let indLevel = 0;
+        if(categoryId != '0') {
+            let category = await getByIdCategory(categoryId);
+            indLevel = category.ind_level;
+        }
+        if(name == "") {
+            onShowMessage("Por favor, especifique el nombre de la categría", "#div-modal-view-crud");
+            return false;
+        }
+        if(description == "") {
+            onShowMessage("Por favor, especifique la descripción de la categría", "#div-modal-view-crud");
+            return false;
+        }
+        let raw = {
+            id: id, category_id: categoryId, name: name, description: description, ind_level: indLevel
+        };
+        if(selAction == "C") {
+            await postCategory(raw);//CREAR UNA CATEGORÍA
+        } else {
+            await putCategory(raw);//ACTUALIZAR UNA CATEGORÍA
+        }
+        selAction = "";
+        selID = 0;
+        $('#txt-name, #txt-description').val("");
+        $('#cbo-category').val("0");
+        await onLoadSelectCategory();//CARGA ASÍNCRONA DE CATEGORÍAS PARA EL TAG SELECT
+        await loadCategories();//CARGA ASÍNCRONA DE CATEGORIAS
+    }
+    //END: OPERACIONES CRUD DE CATEGORÍAS
+
+    //INIT: MÉTODOS PARA MOSTRAR MODALES
+    function onShowCRUD() {
+        selAction = "C";
+        $('#txt-name, #txt-description').val("");
+        $('#cbo-category').val("0");
+        document.getElementById('div-modal-view-crud-label').innerHTML = "Crear Categoría";
+        document.getElementById('bt-view-crud').click();
+    }
+    function onSelCategoryRemove(id) {
+        selID = id;
+        selAction = "D";
+        document.getElementById('bt-view-status').click();
+    }
+    function onShowMessage(message, idModal) {
+        $('#pModalMessage').html(message);
+        $('#btAlertMessage').click();
+        $('#bt-show-message-success').attr("data-bs-target", idModal);
+    }
+    //END: MÉTODOS PARA MOSTRAR MODALES
+
+    $(document).ready(async function() {
+        await onLoadSelectCategory();//CARGA ASÍNCRONA DE CATEGORÍAS PARA EL TAG SELECT
+        await loadCategories();//CARGA ASÍNCRONA DE CATEGORIAS
+    });
+</script>
