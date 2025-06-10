@@ -4,7 +4,7 @@
 - De acuerdo a lo solicitado, se elaboro un CRUD para un control de Categorías para una Joyería, de las cuales se realizó lo siguiente:
 	+ Se creo una base de datos denominada: DB_CRM con la tabla denominada categories.    
 	+ Para crear la aplicación web en Python, se uso el framework Web de Python: Flask
-        - Se creo la carpeta llamada salesApi
+        - Se creo la carpeta llamada Entregable 2
             + Para Backend:
                 - Se creó el modelo: categories.py
                 - Se creó el controlador y la aplicación de ejecución: app.py
