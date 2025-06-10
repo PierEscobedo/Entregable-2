@@ -1,5 +1,4 @@
-<h1>Tarea de Caso Práctico IDL2: Elaborar un CRUD completa en un entorno administrativo.</h1>
-<h2>La aplicación debe tener todas las funcionalidades de un CRUD(Listar, Nuevo, Editar y Eliminar)</h2>
+<h1>IDL2: Elaborar un CRUD.</h1>
 
 - De acuerdo a lo solicitado, se elaboro un CRUD para un control de Categorías para una Joyería, de las cuales se realizó lo siguiente:
 	+ Se creo una base de datos denominada: DB_CRM con la tabla denominada categories.    
